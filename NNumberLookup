@@ -1,0 +1,53 @@
+print(" _______    ___        ________    __     __    ________    _______    _______    _______    __________    __________    _________    __     __    _________  \n"
+      "|       |  |   |      |   __   |  |  |_  |  |  |   _____|  |       |  |       |  |   _   |  |___    ___|  |___    ___|  |___   ___|  |  |_  |  |  |   ______| \n"
+      "|    _  |  |   |      |  |__|  |  |    |_|  |  |  |___     |  _____|  |    _  |  |  | |  |      |  |          |  |          | |      |    |_|  |  |  |        \n"
+      "|   |_| |  |   |      |   __   |  |   _     |  |   ___|    | |_____   |   |_| |  |  | |  |      |  |          |  |          | |      |   _     |  |  |   ___  \n"
+      "|    ___|  |   |___   |  |  |  |  |  | |_   |  |  |        |_____  |  |    ___|  |  |_|  |      |  |          |  |          | |      |  | |_   |  |  |  |_  | \n"
+      "|   |      |       |  |  |  |  |  |  |   |  |  |  |_____    _____| |  |   |      |       |      |  |          |  |       ___| |___   |  |   |  |  |  |____| | \n"
+      "|___|      |_______|  |__|  |__|  |__|   |__|  |________|  |_______|  |___|      |_______|      |__|          |__|      |_________|  |__|   |__|  |_________| \n"
+      "\t\t\t\t\tQuickly retrieve information on US-registered civil aircraft, based on the tail number (AKA 'N-Number')")
+
+from requests_html import HTMLSession
+
+testNs = ("N55M",
+            "N901EE",
+            "N1417D",
+            "N904DE",
+            "N370S",
+            "N930NN",
+            "N540VF",
+            "N199L",
+            "N8NX",
+            "N60033",
+            "N1417D")
+
+def NNumberLookup(NNumber):
+    print(f"Looking up {NNumber}...\n")
+    # create an HTML Session object
+    session = HTMLSession()
+
+    #Build URL for request
+    requestURL = "https://registry.faa.gov/aircraftinquiry/NNum_Results.aspx?NNumbertxt=" + NNumber
+
+    # Use the object above to connect to needed webpage
+    resp = session.get(requestURL)
+
+    # Run JavaScript code on webpage
+    resp.html.render()
+    section = resp.html.find('div.Boxed', first=False)
+
+    for entries in section:
+        print(entries.text)
+
+    print(f"\n///// End of {NNumber}/////\n")
+
+#If you want to do batch queries from a list, here's one way
+# for n in testNs:
+#     NNumberLookup(n)
+
+def ManualQuery():
+    myquery = input("Enter an tail number, with 'N':\n>> ")
+    NNumberLookup(myquery)
+
+while True:
+    ManualQuery()
